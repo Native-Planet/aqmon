@@ -64,18 +64,20 @@
       ?+  mark.sign-arvo  [~ this]
       ::
         %connect
-      :_  this
-      :~  [%pass /subscribe %agent [our.bowl %rumors] %watch /rumors] 
-      ==
+      ~&  >  'Connected'
+      [~ this]
       ::
         %disconnect
-      :_  this
-      :~  [%pass /subscribe %agent [our.bowl %rumors] %leave ~] 
-      ==
+      ~&  >  'Disconnected'
+      [~ this]
       ::
         %error
       ~&  >  ['Error: ' ;;(@tas noun.sign-arvo)]
       `this
+        %data
+      ~&  >  'Data'
+      [~ this]
+
       ==
   ==
 ++  on-watch  on-watch:default
