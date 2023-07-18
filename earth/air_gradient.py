@@ -36,7 +36,10 @@ def gen_data(json_data):
     data.tail.tail.tail.tail.head = tvoc
     data.tail.tail.tail.tail.tail = Cell(0,0)
     data.tail.tail.tail.tail.tail.head = nox
-    data.tail.tail.tail.tail.tail.tail = Cell(atmp, rhum)
+    data.tail.tail.tail.tail.tail.tail = Cell(0,0)
+    data.tail.tail.tail.tail.tail.tail.head = atmp
+    data.tail.tail.tail.tail.tail.tail.tail = Cell(0,0)
+    data.tail.tail.tail.tail.tail.tail.tail.head = rhum
 
     return data
 
@@ -59,8 +62,6 @@ sock_name = '/sense/data'
 pier_path = '/home/amadeo/learn_hoon/nec/'
 vere_path = '/home/amadeo/learn_hoon/urbit-test'
 
-sys.exit()
-
 sock_path = pier_path+'.urb/dev/'+sock_name
 
 
@@ -77,4 +78,5 @@ while True:
         sock.send(newt_data)
     except:
         print('error')
+        sys.exit()
         pass
