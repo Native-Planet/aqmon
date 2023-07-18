@@ -72,13 +72,7 @@ while True:
     try:
         data = requests.get(device_ip).json()
         noun_data = gen_data(data)
-        jammed_data = jam(noun_data)
-        length = (jammed_data.bit_length()+7)//8
-        length = length.to_bytes(4, 'big')
-        newt_data = bytearra(jammed_data.to_bytes(length+5,'big'))
-        
-        for i in range(0,4):
-            newt_data[i+1] = length[i]
+        newt_data = newt_jam(noun_data)
 
         sock.send(newt_data)
     except:
