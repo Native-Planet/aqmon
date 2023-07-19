@@ -6,10 +6,11 @@
   ==
 +$  state-0
   $:  %0
-  data=((mop @da point) lte)
+  data=((mop @da point) lth)
   ==
 +$  point  [wifi=@ rco2=@ pm02=@ tvoc=@ nox=@ atmp=@ rhum=@]
 +$  card  card:agent:gall
+++  myon  ((on @da point) lth)
 --
 %-  agent:dbug
 =|  state-0
@@ -59,7 +60,6 @@
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
   =/  cad  +.sign-arvo
-  =/  myon  ((on @da point) lte)
   ?+  sign-arvo  (on-arvo:default wire sign-arvo)
       [%lick %soak *]
       ?+  mark.sign-arvo  [~ this]
@@ -76,8 +76,8 @@
       ~&  >  ['Error: ' ;;(@tas noun.sign-arvo)]
       `this
         %data
-      =/  d  noun.sign-arvo
-      =/  point  :*
+      =/  d  ;;((list [@tas @]) noun.sign-arvo)
+      =/  =point  :*
         wifi=+.&1.d
         rco2=+.&2.d
         pm02=+.&3.d
