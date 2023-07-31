@@ -1,4 +1,5 @@
-/+  default-agent, dbug
+/-  *sense
+/+  default-agent, dbug, sense
 !:
 |%
 +$  versioned-state
@@ -6,11 +7,19 @@
   ==
 +$  state-0
   $:  %0
-  data=((mop @da point) lth)
+  =data
   ==
-+$  point  [wifi=@ rco2=@ pm02=@ tvoc=@ nox=@ atmp=@ rhum=@]
+++  data-on  ((on @ point) gth)
 +$  card  card:agent:gall
-++  myon  ((on @da point) lth)
+++  unique-time
+  |=  [time=@da =data]
+  ^-  @
+  =/  unix-ms=@
+    (unm:chrono:userlib time)
+  |-
+  ?.  (has:data-on data unix-ms)
+    unix-ms
+  $(time (add unix-ms 1))
 --
 %-  agent:dbug
 =|  state-0
@@ -27,7 +36,7 @@
 ++  on-load
   |=  old=vase
   ^-  (quip card _this)
-  `this(state !<(state-0 old))
+  `this(state !<(versioned-state old))
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
@@ -51,10 +60,32 @@
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
-  ~&  >>  path
-  =/  dev  `@tas`(snag 2 path)
+  ?>  (team:title our.bowl src.bowl)
+  =/  now  now.bowl
   ?+  path  (on-peek:default path)
-    [%s %agents *]  ``noun+!>(dev)
+      [%x %entries *]
+    ?+  t.t.path  (on-peek:default path)
+        [%all ~]
+      :^  ~  ~  %sense-update
+      !>  ^-  update
+      [now %data (tap:data-on data)]
+    ::
+        [%before @ @ ~]
+      =/  before=@da  (rash i.t.t.t.path dem)
+      =/  max=@  (rash i.t.t.t.t.path dem)
+      :^  ~  ~  %sense-update
+      !>  ^-  update
+      [now %data (tab:data-on data `before max)]
+    ::
+        [%between @ @ ~]
+      =/  start=@da
+        =+  (rash i.t.t.t.path dem)
+        ?:(=(0 -) - (sub - 1))
+      =/  end=@  (add 1 (rash i.t.t.t.t.path dem))
+      :^  ~  ~  %sense-update
+      !>  ^-  update
+      [now %data (tap:data-on (lot:data-on data `end `start))]
+    ==
   ==
 ++  on-arvo
   |=  [=wire =sign-arvo]
@@ -77,6 +108,7 @@
       `this
         %data
       =/  d  ;;((list [@tas @]) noun.sign-arvo)
+      =/  now=@  (unique-time now.bowl data)
       =/  =point  :*
         wifi=+.&1.d
         rco2=+.&2.d
@@ -86,12 +118,18 @@
         atmp=+.&6.d
         rhum=+.&7.d
       ==
-      ~&  >  ['Data' now.bowl point]
+      ~&  >  ['Data' now point]
       :-  ~
-      this(data (put:myon data now.bowl point))
+      this(data (put:data-on data now point))
       ==
   ==
-++  on-watch  on-watch:default
+++  on-watch  
+  |=  =path
+  ^-  (quip card _this)
+  ?>  (team:title our.bowl src.bowl)
+  ?+  path  (on-watch:default path)
+    [%updates ~]  `this
+  ==
 ++  on-leave  on-leave:default
 ++  on-agent  
   |=  [=wire =sign:agent:gall]
