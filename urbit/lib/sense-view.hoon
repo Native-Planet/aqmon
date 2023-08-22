@@ -57,19 +57,10 @@
   ^~
   %-  trip
   '''
-  // function toDateTimeObject(utime) {
-  //   const d = new Date(utime);
-  //   return {
-  //     day: d.getDay(),
-  //     hours: d.getHours(),
-  //     minutes: d.getMinutes(),
-  //     seconds: d.getSeconds(),
-  //   };
-  // };
-  // const dto = toDateTimeObject;
-
   var vegaSpec = {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+    width: 600,
+    height: 200,
     data: {
       values: [
         {time: 1692650224451, wifi: 89, rco2: 722, pm02: 6, tvoc: 272, nox: 1, atmp: 223, rhum: 28},
@@ -81,15 +72,51 @@
         {time: 1692650349419, wifi: 85, rco2: 781, pm02: 7, tvoc: 277, nox: 1, atmp: 201, rhum: 17},
       ],
     },
-    mark: 'area',
+    transform: [
+      {calculate: "datum.wifi / 100",          as: "n_wifi"},
+      {calculate: "(datum.rco2 - 400) / 1600", as: "n_rco2"},
+      {calculate: "(datum.pm02 - 2) / 8",      as: "n_pm02"},
+      {calculate: "(datum.tvoc - 100) / 900",  as: "n_tvoc"},
+      {calculate: "(datum.atmp - 100) / 300",  as: "n_atmp"},
+      {calculate: "datum.rhum / 100",          as: "n_rhum"},
+      {
+        fold: ["n_wifi", "n_rco2", "n_pm02", "n_tvoc", "n_atmp", "n_rhum"],
+        as: ["normal", "value"],
+      },
+      {
+        fold: ["wifi", "rco2", "pm02", "tvoc", "atmp", "rhum"],
+        as: ["raw", "raw_value"],
+      },
+    ],
+    mark: {
+      type: 'rect',
+      width: 75,
+      height: 25,
+    },
+
     encoding: {
-      x: {field: 'time', type: 'temporal'},
-      y: {field: 'wifi', type: 'quantitative', title: 'WiFi Connection'},
-      y: {field: 'rco2', type: 'quantitative', title: 'CO2 Concentration'},
-      y: {field: 'pmo2', type: 'quantitative', title: 'Particulate Matter'},
-      y: {field: 'tvoc', type: 'quantitative', title: 'Total Volatile Organic Compounds'},
-      y: {field: 'atmp', type: 'quantitative', title: 'Ambient Temperature'},
-      y: {field: 'rhum', type: 'quantitative', title: 'Relative Humidity'},
+      x: {
+        field: 'time',
+        type: 'ordinal',
+        title: 'Time',
+        timeUnit: 'hoursminutesseconds',
+        axis: {
+          labelAngle: 60,
+          labelOverlap: false,
+        },
+      },
+      y: {
+        field: "normal",
+        type: "nominal",
+        title: null,
+        axis: { labelExpr: "replace(datum.label, 'n_', '')" },
+      },
+
+      color: {
+        scale: {type: "log"},
+        field: 'value',
+        type: 'quantitative',
+      }
     },
   };
   '''
@@ -102,9 +129,8 @@
     --measure: 80ch;
   }
   #viz {
-    width: 10rem;
-    height: 10rem;
-    background: red;
+    width: 40rem;
+    height: 30rem;
   }
   '''
 --

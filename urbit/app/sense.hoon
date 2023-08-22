@@ -32,18 +32,19 @@
       hc       ~(. ^hc bowl)
   ++  on-init
     ^-  (quip card _this)
-    `this
-    :: :_  this
-    :: [%pass / %arvo %l %spin /data]~ 
+    :_  this
+    %-  limo
+      :~  :*  %pass  /eyre/connect  %arvo  %e
+              %connect  [~ /apps/sense]  %sense
+      ==  ==
+      :: [%pass / %arvo %l %spin /data]
+  ::
   ++  on-save   !>(state)
   ++  on-load
     |=  old=vase
     ^-  (quip card _this)
-    :_  this(state !<(versioned-state old))
-    %-  limo
-    :~  :*  %pass  /eyre/connect  %arvo  %e
-            %connect  [~ /apps/sense]  %sense
-    ==  ==
+    [~ this(state !<(versioned-state old))]
+  ::
   ++  on-poke
     |=  [=mark =vase]
     ^-  (quip card _this)
