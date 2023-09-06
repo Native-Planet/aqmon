@@ -24,6 +24,9 @@
       ;link
         =rel   "stylesheet"
         =href  "https://unpkg.com/@yungcalibri/layout@0.1.5/dist/bundle.css";
+      ;link
+        =rel   "stylesheet"
+        =href  "https://unpkg.com/@fontsource/inter@5.0.8/index.css";
       ;script
         =type  "module"
         =src   "https://unpkg.com/@yungcalibri/layout@0.1.5/umd/bundle.js";
@@ -80,11 +83,11 @@
       {calculate: "(datum.atmp - 100) / 300",  as: "n_atmp"},
       {calculate: "datum.rhum / 100",          as: "n_rhum"},
       {
-        fold: ["n_wifi", "n_rco2", "n_pm02", "n_tvoc", "n_atmp", "n_rhum"],
+        fold: ["n_rco2", "n_pm02", "n_tvoc", "n_atmp", "n_rhum"],
         as: ["normal", "value"],
       },
       {
-        fold: ["wifi", "rco2", "pm02", "tvoc", "atmp", "rhum"],
+        fold: ["rco2", "pm02", "tvoc", "atmp", "rhum"],
         as: ["raw", "raw_value"],
       },
     ],
@@ -125,8 +128,40 @@
   ^~
   %-  trip
   '''
+  @font-face {
+    font-family: 'BPdotsUnicase';
+    src: url('/apps/sense/static/bpdu-bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+  }
   :root {
     --measure: 80ch;
+
+    --white-100: #F1F2EE;
+
+    --gray-100: #DDE3DF;
+    --gray-200: #ABBAAE;
+    --gray-300: #8FA393;
+    --gray-400: #5C7060;
+
+    --np-white:  #F8F8F6;
+    --np-gray:   #E8E8E3;
+    --np-black:  #313933;
+    --np-yellow: #EDF02C;
+
+    --np-dark-bg: #161D17;
+    --np-dark-hl: #2C3A2E;
+
+    --np-button-green: #08A317;
+    --np-active-green: #D7DB0F;
+    --np-status-green: #067510;
+  }
+  body {
+    font-family: "Inter", sans-serif;
+  }
+  h1 {
+    font-family: "BPdotsUnicase", ui-monospace;
   }
   #viz {
     width: 40rem;

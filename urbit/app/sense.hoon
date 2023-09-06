@@ -1,5 +1,6 @@
 /-  *sense
 /+  default-agent, dbug, sense, view=sense-view, server, schooner, verb
+/*  bpdu  %woff2  /sat/bpdotsunicase-bold/woff2
 !:
 |%
 +$  versioned-state
@@ -187,8 +188,16 @@
     ?+    method.request.inbound-request  derp
     ::
         %'GET'
-      :_  state
-      (send 200 ~ %manx (~(document view state)))
+      ?+    site.rest  dump
+      ::
+          [%apps %sense ~]
+        :_  state
+        (send 200 ~ %manx (~(document view state)))
+      ::
+          [%apps %sense %static %bpdu-bold ~]
+        :_  state
+        (send 200 ~ %font-woff2 q.bpdu)
+      ==
     ==
   ::
   --
