@@ -52,9 +52,7 @@
     ?+    mark  (on-poke:default mark vase)
       ::
         %handle-http-request
-      ?>  =(src.bowl our.bowl)
       =/  req  !<([eyre-id=@ta =inbound-request:eyre] vase)
-      ?>  authenticated.inbound-request.req
       ?>  =(method.request.inbound-request.req %'GET')
       ::
       =^  cards  state
