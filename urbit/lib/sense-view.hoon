@@ -159,9 +159,11 @@
   }
   body {
     font-family: "Inter", sans-serif;
+    background-color: var(--np-dark-bg);
   }
   h1 {
     font-family: "BPdotsUnicase", ui-monospace;
+    color: var(--np-white);
   }
   #viz {
     width: 40rem;

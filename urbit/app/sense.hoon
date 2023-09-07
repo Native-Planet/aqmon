@@ -37,8 +37,9 @@
     %-  limo
       :~  :*  %pass  /eyre/connect  %arvo  %e
               %connect  [~ /apps/sense]  %sense
-      ==  ==
-      :: [%pass / %arvo %l %spin /data]
+          ==
+          [%pass / %arvo %l %spin /data]
+      ==
   ::
   ++  on-save   !>(state)
   ++  on-load
@@ -61,21 +62,6 @@
       ::
       [cards this]
     ==
-    ::?>  ?=(%uart-action mark)
-    ::=/  act  !<(action vase)
-    ::?-    -.act
-        ::%spin
-      :::_  this
-      ::[%pass / %arvo %l %spin name.act]~
-      ::::
-        ::%shut
-      :::_  this
-      ::[%pass /shut %arvo %l %shut name.act]~
-      ::::
-        ::%spit
-      :::_  this
-      ::[%pass /spit %arvo %l %spit name.act mark.act data.act]~
-    ::==
   ::
   ++  on-peek
     |=  =path
@@ -110,44 +96,40 @@
   ++  on-arvo
     |=  [=wire =sign-arvo]
     ^-  (quip card _this)
-    (on-arvo:default wire sign-arvo)
-    ::  removed pending help from mopfel to get lick running on a dev
-    ::  comet
-    ::=/  cad  +.sign-arvo
-    ::?+    sign-arvo  (on-arvo:default wire sign-arvo)
-    ::::
-    ::    [%lick %soak *]
-    ::  ?+    mark.sign-arvo  [~ this]
-    ::  ::
-    ::      %connect
-    ::    ~&  >  'Connected'
-    ::    `this
-    ::  ::
-    ::      %disconnect
-    ::    ~&  >  'Disconnected'
-    ::    `this
-    ::  ::
-    ::      %error
-    ::    ~&  >  ['Error: ' ;;(@tas noun.sign-arvo)]
-    ::    `this
-    ::  ::
-    ::      %data
-    ::    =/  d  ;;((list [@tas @]) noun.sign-arvo)
-    ::    =/  now=@  (unique-time now.bowl data)
-    ::    =/  =point  :*  wifi=+.&1.d
-    ::                    rco2=+.&2.d
-    ::                    pm02=+.&3.d
-    ::                    tvoc=+.&4.d
-    ::                    nox=+.&5.d
-    ::                    atmp=+.&6.d
-    ::                    rhum=+.&7.d
-    ::                ==
-    ::    ~&  >  ['Data' now point]
-    ::    :-  ~
-    ::    this(data (put:data-on data now point))
-    ::  ==
-    ::::
-    ::==
+    ?+    sign-arvo  (on-arvo:default wire sign-arvo)
+    ::
+        [%lick %soak *]
+      ?+    mark.sign-arvo  [~ this]
+      ::
+          %connect
+        ~&  >  'Connected'
+        `this
+      ::
+          %disconnect
+        ~&  >  'Disconnected'
+        `this
+      ::
+          %error
+        ~&  >  ['Error: ' ;;(@tas noun.sign-arvo)]
+        `this
+      ::
+          %data
+        =/  d  ;;((list [@tas @]) noun.sign-arvo)
+        =/  now=@  (unique-time now.bowl data)
+        =/  =point  :*  wifi=+.&1.d
+                        rco2=+.&2.d
+                        pm02=+.&3.d
+                        tvoc=+.&4.d
+                        nox=+.&5.d
+                        atmp=+.&6.d
+                        rhum=+.&7.d
+                    ==
+        ~&  >  ['Data' now point]
+        :-  ~
+        this(data (put:data-on data now point))
+      ==
+    ::
+    ==
   ++  on-watch  
     |=  =path
     ^-  (quip card _this)
