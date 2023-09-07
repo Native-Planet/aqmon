@@ -70,27 +70,39 @@
     =/  now  now.bowl
     ?+  path  (on-peek:default path)
         [%x %entries *]
-      ?+  t.t.path  (on-peek:default path)
+      =/  path  t.t.path
+      ?+  path  (on-peek:default path)
           [%all ~]
         :^  ~  ~  %sense-update
         !>  ^-  update
         [now %data (tap:data-on data)]
       ::
-          [%before @ @ ~]
-        =/  before=@da  (rash i.t.t.t.path dem)
-        =/  max=@  (rash i.t.t.t.t.path dem)
+          [%last @ ~]
+        =/  count=@  (rash i.t.path dem)
         :^  ~  ~  %sense-update
         !>  ^-  update
-        [now %data (tab:data-on data `before max)]
+        [now %data (tab:data-on data `(unm:chrono:userlib now) count)]
+      ::
+          [%before @ @ ~]
+        =/  before=@  (unm:chrono:userlib (slav %da `@t`i.t.path))
+        =/  count=@   (rash i.t.t.path dem)
+        :^  ~  ~  %sense-update
+        !>  ^-  update
+        [now %data (tab:data-on data `(unm:chrono:userlib before) count)]
       ::
           [%between @ @ ~]
-        =/  start=@da
-          =+  (rash i.t.t.t.path dem)
-          ?:(=(0 -) - (sub - 1))
-        =/  end=@  (add 1 (rash i.t.t.t.t.path dem))
+        =/  start=@  (unm:chrono:userlib (slav %da `@t`i.t.path))
+        =/  end=@    (unm:chrono:userlib (slav %da `@t`i.t.t.path))
         :^  ~  ~  %sense-update
         !>  ^-  update
         [now %data (tap:data-on (lot:data-on data `end `start))]
+      ::
+          [%since @ ~]
+        :: this is a unix timestamp
+        =/  end=@  i.t.path
+        :^  ~  ~  %sense-update
+        !>  ^-  update
+        [now %data (tab:data-on data `end 10.000)]
       ==
     ==
   ++  on-arvo
@@ -165,6 +177,7 @@
     =*  derp  [(send 500 ~ [%stock ~]) state]
     ^-  (quip card _state)
     ::
+    ~&  handle-http+site.rest
     ?+    method.request.inbound-request  derp
     ::
         %'GET'
@@ -174,6 +187,28 @@
         :_  state
         (send 200 ~ %manx (~(document view state)))
       ::
+          [%apps %sense %entries %all ~]
+        ::  get the last 200 data points
+        =/  out  .^(json %gx /(scot %p our.bowl)/sense/(scot %da now.bowl)/entries/all/json)
+        :_  state
+        (send 200 ~ %json out)
+      ::
+          [%apps %sense %entries %last @t ~]
+        =/  count=(unit @ud)  (slaw %ud i.t.t.t.t.site.rest)
+        ?~  count  derp
+        =/  out
+          .^(json %gx /(scot %p our.bowl)/sense/(scot %da now.bowl)/entries/last/(scot %u u.count)/json)
+        :_  state
+        (send 200 ~ %json out)
+      ::
+          [%apps %sense %entries %since @ ~]
+        =/  since=@  (rash i.t.t.t.t.site.rest dem)
+        =/  out
+          .^(json %gx /(scot %p our.bowl)/sense/(scot %da now.bowl)/entries/since/(scot %u since)/json)
+        :_  state
+        (send 200 ~ %json out)
+      ::
+      :: static files
           [%apps %sense %static %bpdu-bold ~]
         :_  state
         (send 200 ~ %font-woff2 q.bpdu)

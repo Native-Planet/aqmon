@@ -166,8 +166,8 @@
     color: var(--np-white);
   }
   #viz {
-    width: 40rem;
-    height: 30rem;
+    width: 80vw;
+    height: 90vh;
   }
   '''
 --
