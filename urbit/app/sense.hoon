@@ -177,7 +177,6 @@
     =*  derp  [(send 500 ~ [%stock ~]) state]
     ^-  (quip card _state)
     ::
-    ~&  handle-http+site.rest
     ?+    method.request.inbound-request  derp
     ::
         %'GET'
