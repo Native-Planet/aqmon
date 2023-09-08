@@ -96,13 +96,6 @@
         :^  ~  ~  %sense-update
         !>  ^-  update
         [now %data (tap:data-on (lot:data-on data `end `start))]
-      ::
-          [%since @ ~]
-        :: this is a unix timestamp
-        =/  end=@  i.t.path
-        :^  ~  ~  %sense-update
-        !>  ^-  update
-        [now %data (tab:data-on data `end 10.000)]
       ==
     ==
   ++  on-arvo
@@ -136,7 +129,7 @@
                         atmp=+.&6.d
                         rhum=+.&7.d
                     ==
-        ~&  >  ['Data' now point]
+        :: ~&  >  ['Data' now point]
         :-  ~
         this(data (put:data-on data now point))
       ==
@@ -202,8 +195,9 @@
       ::
           [%apps %sense %entries %since @ ~]
         =/  since=@  (rash i.t.t.t.t.site.rest dem)
+        =/  since=@da  (from-unix-ms:chrono:userlib since)
         =/  out
-          .^(json %gx /(scot %p our.bowl)/sense/(scot %da now.bowl)/entries/since/(scot %u since)/json)
+          .^(json %gx /(scot %p our.bowl)/sense/(scot %da now.bowl)/entries/between/(scot %da since)/(scot %da now.bowl)/json)
         :_  state
         (send 200 ~ %json out)
       ::

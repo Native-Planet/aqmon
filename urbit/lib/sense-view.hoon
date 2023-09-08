@@ -41,8 +41,7 @@
       ;script(src "https://unpkg.com/vega@5");
       ;script(src "https://unpkg.com/vega-lite@5");
       ;script(src "https://unpkg.com/vega-embed@6");
-      ;script: {vega-spec}
-      ;script(type "text/hyperscript"): {page-script}
+      ;script: {page-script}
       ;style: {style}
     ==
     ;body(hx-ext "json-enc,include-vals")
@@ -57,7 +56,7 @@
     ==
   ==
 ::
-++  vega-spec
+++  page-script
   ^~
   %-  trip
   '''
@@ -77,26 +76,8 @@
         {time: 1692650349419, wifi: 85, rco2: 781, pm02: 7, tvoc: 277, nox: 1, atmp: 201, rhum: 17},
       ],
     },
-    transform: [
-      {calculate: "datum.wifi / 100",          as: "n_wifi"},
-      {calculate: "(datum.rco2 - 400) / 1600", as: "n_rco2"},
-      {calculate: "(datum.pm02 - 2) / 8",      as: "n_pm02"},
-      {calculate: "(datum.tvoc - 100) / 900",  as: "n_tvoc"},
-      {calculate: "(datum.atmp - 100) / 300",  as: "n_atmp"},
-      {calculate: "datum.rhum / 100",          as: "n_rhum"},
-      {
-        fold: ["n_rco2", "n_pm02", "n_tvoc", "n_atmp", "n_rhum"],
-        as: ["normal", "value"],
-      },
-      {
-        fold: ["rco2", "pm02", "tvoc", "atmp", "rhum"],
-        as: ["raw", "raw_value"],
-      },
-    ],
     mark: {
-      type: 'rect',
-      width: 75,
-      height: 25,
+      type: 'line',
     },
 
     encoding: {
@@ -104,70 +85,108 @@
         field: 'time',
         type: 'ordinal',
         title: 'Time',
-        timeUnit: 'hoursminutesseconds',
+        bin: true,
+        timeUnit: {
+          unit: 'hoursminutesseconds',
+          step: 5,
+        },
         axis: {
           labelAngle: 60,
           labelOverlap: false,
         },
       },
       y: {
-        field: "normal",
-        type: "nominal",
-        title: null,
-        axis: { labelExpr: "replace(datum.label, 'n_', '')" },
+        field: "rco2",
+        type: "quantitative",
+        title: "RCO2",
       },
 
-      color: {
-        scale: {type: "log"},
-        field: 'value',
-        type: 'quantitative',
-      }
     },
   };
-  '''
-::
-++  page-script
-  ^~
-  %-  trip
-  '''
-  on load call vegaEmbed('#viz', vegaSpec)
-  then set $chart to its view
-  then log $chart
 
-  js
-    function filterTenMins(dat) {
-      return Date.now() - dat.time > 600000;
+  async function setup() {
+    try {
+      console.log('setup');
+      const result = await vegaEmbed('#viz', vegaSpec);
+      return result.view;
+    } catch (err) {
+      console.error('error during setup:', err);
     }
-  end
+  };
 
-  def updateChart(since)
-    fetch `/apps/sense/entries/since/$since` as Object
-    then set newPoints to it
-    then set $latest to the first of newPoints
-    then log $latest
-    then call vega.changeset().insert(newPoints).remove(filterTenMins)
-    then set changeset to the result
-    then call $chart.change('points', changeset).run()
-  end
+  const makeFilter = () => {
+    now = Date.now();
+    return dat => now - dat.time > 120000;
+  };
 
-  on load repeat forever
-    if no $latest then set $latest to {time: (Date.now() - 10000)}
-    then call updateChart($latest.time)
-    wait 5s
-  end
+  async function getLatest() {
+    try {
+      const latest = (() => {
+        const strLatest = sessionStorage.getItem("latestPoint");
+        console.log('strLatest:', strLatest);
+        if (!strLatest) {
+          return;
+        }
+        return JSON.parse(strLatest);
+      })();
+
+      console.log('latest:', latest);
+
+      const endpoint = !!latest?.time
+        ? `/apps/sense/entries/since/${latest.time}`
+        : `/apps/sense/entries/last/100`;
+
+      const newPoints = await
+        fetch(endpoint)
+        .then(res => res.json());
+      console.log('got', newPoints.length, 'new data points');
+      
+      return newPoints;
+    } catch (err) {
+      console.error('error fetching new points:', err);
+      return [];
+    }
+  }
+
+  async function updateData(chart) {
+    try {
+      if (!chart) {
+        throw new Error("tried to update data but chart isn't ready yet");
+      }
+
+      const newPoints = await getLatest();
+      const newLatest = newPoints?.[0];
+      if (!newLatest) {
+        console.error('aborting update, no new data available');
+        return;
+      }
+      sessionStorage.setItem('latestPoint', JSON.stringify(newLatest));
+
+      const changeset = vega.changeset()
+        .insert(newPoints)
+        .remove(makeFilter());
+
+      console.log('new changeset:', changeset);
+      chart.change('points', changeset).run();
+
+    } catch (err) {
+      console.error('error updating data:', err);
+    }
+  }
+
+  window.addEventListener('load', function() {
+    console.log('loaded, starting up');
+    sessionStorage.removeItem('latestPoint');
+    setup().then(view => {
+      console.log('done setup, chart is:', view);
+      const updateInterval = setInterval(() => {
+        
+        updateData(view)
+      }, 7500);
+      document.addEventListener('beforeUnload', () => clearInterval(updateInterval));
+    });
+  });
   '''
-  :: '''
-  :: var poll = new Event('pollSense');
-  :: function startPolling() {
-  ::   const pollInterval = setInterval(() => {
-  ::     document.getElementById('target').dispatchEvent(poll);
-  ::   }, 1500)
-  ::   window.addEventListener('beforeUnload', () => clearInterval(pollInterval));
-  :: };
-  :: async function getLatestPoints(since) {
-  ::   fetch("/apps/sense/entries/since/{timestamp}").then
-  :: }
-  :: '''
   :: Need to call something like:
   ::
   ::   at interval
