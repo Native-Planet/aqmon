@@ -42,6 +42,7 @@
       ;script(src "https://unpkg.com/vega-lite@5");
       ;script(src "https://unpkg.com/vega-embed@6");
       ;script: {vega-spec}
+      ;script(type "text/hyperscript"): {page-script}
       ;style: {style}
     ==
     ;body(hx-ext "json-enc,include-vals")
@@ -49,7 +50,7 @@
     ;center-l
       ;stack-l(space "var(--s0)")
         ;h1: Sense
-        ;div#viz(data-script "on load call vegaEmbed('#viz', vegaSpec)");
+        ;div#viz;
       ==
     ==
     ::
@@ -65,6 +66,7 @@
     width: 600,
     height: 200,
     data: {
+      name: 'points',
       values: [
         {time: 1692650224451, wifi: 89, rco2: 722, pm02: 6, tvoc: 272, nox: 1, atmp: 223, rhum: 28},
         {time: 1692650304183, wifi: 84, rco2: 704, pm02: 7, tvoc: 275, nox: 1, atmp: 225, rhum: 29},
@@ -123,6 +125,61 @@
     },
   };
   '''
+::
+++  page-script
+  ^~
+  %-  trip
+  '''
+  on load call vegaEmbed('#viz', vegaSpec)
+  then set $chart to its view
+  then log $chart
+
+  js
+    function filterTenMins(dat) {
+      return Date.now() - dat.time > 600000;
+    }
+  end
+
+  def updateChart(since)
+    fetch `/apps/sense/entries/since/$since` as Object
+    then set newPoints to it
+    then set $latest to the first of newPoints
+    then log $latest
+    then call vega.changeset().insert(newPoints).remove(filterTenMins)
+    then set changeset to the result
+    then call $chart.change('points', changeset).run()
+  end
+
+  on load repeat forever
+    if no $latest then set $latest to {time: (Date.now() - 10000)}
+    then call updateChart($latest.time)
+    wait 5s
+  end
+  '''
+  :: '''
+  :: var poll = new Event('pollSense');
+  :: function startPolling() {
+  ::   const pollInterval = setInterval(() => {
+  ::     document.getElementById('target').dispatchEvent(poll);
+  ::   }, 1500)
+  ::   window.addEventListener('beforeUnload', () => clearInterval(pollInterval));
+  :: };
+  :: async function getLatestPoints(since) {
+  ::   fetch("/apps/sense/entries/since/{timestamp}").then
+  :: }
+  :: '''
+  :: Need to call something like:
+  ::
+  ::   at interval
+  ::   fetch(/apps/sense/entries/since/{timestamp}).then(points => {
+  ::     vega.changeset().insert(...points).remove(...some time threshold)
+  ::   })
+  ::
+  :: and then
+  ::
+  ::   view.change('table', changeSet).run();
+  ::
+  :: the view object is in res.view from the promise you get back from vegaEmbed
 ::
 ++  style
   ^~
