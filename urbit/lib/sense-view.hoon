@@ -60,48 +60,49 @@
   ^~
   %-  trip
   '''
+  const concat = [
+    ['wifi',    'Wi-Fi'],
+    ['rco2',    'Room CO\u2082'],
+    /* ['rco2',    'Room CO2'], */
+    ['pm02',    'Particulate Matter'],
+    ['tvoc',    'Total Volatile Organic Compounds'],
+    ['atmp',    'Ambient Temperature'],
+    ['rhum',    'Relative Humidity'],
+  ].map(([field, title]) => ({
+      mark: 'line',
+      width: 600,
+      autosize: {
+        type: 'fit-x',
+        contains: 'padding',
+        resize: true,
+      },
+      encoding: {
+        x: {
+          field: 'time',
+          type: 'temporal',
+          title: 'Time',
+          axis: {
+            labelAngle: 30,
+            labelOverlap: false,
+            format: '%m-%d %H:%M',
+          },
+        },
+        y: {
+          field,
+          type: "quantitative",
+          title,
+        },
+      },
+    })
+  );
+
   var vegaSpec = {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-    width: 600,
-    height: 200,
     data: {
       name: 'points',
-      values: [
-        {time: 1692650224451, wifi: 89, rco2: 722, pm02: 6, tvoc: 272, nox: 1, atmp: 223, rhum: 28},
-        {time: 1692650304183, wifi: 84, rco2: 704, pm02: 7, tvoc: 275, nox: 1, atmp: 225, rhum: 29},
-        {time: 1692650316838, wifi: 83, rco2: 761, pm02: 6, tvoc: 278, nox: 1, atmp: 228, rhum: 28},
-        {time: 1692650327176, wifi: 87, rco2: 812, pm02: 6, tvoc: 269, nox: 1, atmp: 219, rhum: 24},
-        {time: 1692650334730, wifi: 92, rco2: 800, pm02: 8, tvoc: 271, nox: 1, atmp: 214, rhum: 21},
-        {time: 1692650342971, wifi: 88, rco2: 815, pm02: 9, tvoc: 279, nox: 1, atmp: 208, rhum: 20},
-        {time: 1692650349419, wifi: 85, rco2: 781, pm02: 7, tvoc: 277, nox: 1, atmp: 201, rhum: 17},
-      ],
+      url: '/apps/sense/entries/latest/200',
     },
-    mark: {
-      type: 'line',
-    },
-
-    encoding: {
-      x: {
-        field: 'time',
-        type: 'ordinal',
-        title: 'Time',
-        bin: true,
-        timeUnit: {
-          unit: 'hoursminutesseconds',
-          step: 5,
-        },
-        axis: {
-          labelAngle: 60,
-          labelOverlap: false,
-        },
-      },
-      y: {
-        field: "rco2",
-        type: "quantitative",
-        title: "RCO2",
-      },
-
-    },
+    vconcat: concat,
   };
 
   async function setup() {
@@ -116,7 +117,8 @@
 
   const makeFilter = () => {
     now = Date.now();
-    return dat => now - dat.time > 120000;
+    oldest = 60 * 1000 * 20;
+    return dat => now - dat.time > oldest;
   };
 
   async function getLatest() {
@@ -134,7 +136,7 @@
 
       const endpoint = !!latest?.time
         ? `/apps/sense/entries/since/${latest.time}`
-        : `/apps/sense/entries/last/100`;
+        : `/apps/sense/entries/since/${new Date() - 60 * 1000}`;
 
       const newPoints = await
         fetch(endpoint)
@@ -182,23 +184,11 @@
       const updateInterval = setInterval(() => {
         
         updateData(view)
-      }, 7500);
+      }, 3500);
       document.addEventListener('beforeUnload', () => clearInterval(updateInterval));
     });
   });
   '''
-  :: Need to call something like:
-  ::
-  ::   at interval
-  ::   fetch(/apps/sense/entries/since/{timestamp}).then(points => {
-  ::     vega.changeset().insert(...points).remove(...some time threshold)
-  ::   })
-  ::
-  :: and then
-  ::
-  ::   view.change('table', changeSet).run();
-  ::
-  :: the view object is in res.view from the promise you get back from vegaEmbed
 ::
 ++  style
   ^~
