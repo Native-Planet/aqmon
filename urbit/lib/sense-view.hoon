@@ -70,7 +70,7 @@
     ['rhum',    'Relative Humidity'],
   ].map(([field, title]) => ({
       mark: 'line',
-      width: 600,
+      width: 700,
       autosize: {
         type: 'fit-x',
         contains: 'padding',
@@ -80,7 +80,7 @@
         x: {
           field: 'time',
           type: 'temporal',
-          title: 'Time',
+          title: null,
           axis: {
             labelAngle: 30,
             labelOverlap: false,
@@ -100,7 +100,12 @@
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     data: {
       name: 'points',
-      url: '/apps/sense/entries/latest/200',
+    },
+    width: 800,
+    autosize: {
+      type: 'fit-x',
+      contains: 'padding',
+      resize: true,
     },
     vconcat: concat,
   };
