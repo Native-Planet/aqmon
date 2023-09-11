@@ -61,12 +61,12 @@
   %-  trip
   '''
   const concat = [
-    ['wifi',    'Wi-Fi'],
-    ['rco2',    'Room CO2'],
-    ['pm02',    'Particles'],
-    ['tvoc',    'Volatiles'],
-    ['c_atmp',  'Temp'],
-    ['rhum',    'Humidity'],
+    ['c_atmp',  'Temp (C)'],
+    ['rhum',    'Humidity (%)'],
+    ['rco2',    'Room CO2 (ppm)'],
+    ['pm02',    'Particles (ug/m3)'],
+    ['tvoc',    'Volatiles (ppm)'],
+    ['wifi',    'Wi-Fi (dB)'],
   ].map(([field, title]) => ({
     mark: {
       type: 'line',

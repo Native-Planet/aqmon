@@ -403,7 +403,8 @@ def cue_from_stream(s: BitStream):
     def one():
         nonlocal cur
         cur += 1
-        return s.read(bool)
+        x= s.read(bool)
+        return x
     
     def rub():
         z = 0
