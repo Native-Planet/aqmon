@@ -62,39 +62,43 @@
   '''
   const concat = [
     ['wifi',    'Wi-Fi'],
-    ['rco2',    'Room CO\u2082'],
-    /* ['rco2',    'Room CO2'], */
-    ['pm02',    'Particulate Matter'],
-    ['tvoc',    'Total Volatile Organic Compounds'],
-    ['atmp',    'Ambient Temperature'],
-    ['rhum',    'Relative Humidity'],
+    ['rco2',    'Room CO2'],
+    ['pm02',    'Particles'],
+    ['tvoc',    'Volatiles'],
+    ['c_atmp',  'Temp'],
+    ['rhum',    'Humidity'],
   ].map(([field, title]) => ({
-      mark: 'line',
-      width: 700,
-      autosize: {
-        type: 'fit-x',
-        contains: 'padding',
-        resize: true,
+    mark: {
+      type: 'line',
+      color: "#EDF02C",
+      point: {
+        color: "#EDF02C",
       },
-      encoding: {
-        x: {
-          field: 'time',
-          type: 'temporal',
-          title: null,
-          axis: {
-            labelAngle: 30,
-            labelOverlap: false,
-            format: '%m-%d %H:%M',
-          },
-        },
-        y: {
-          field,
-          type: "quantitative",
-          title,
+    },
+    width: 700,
+    autosize: {
+      type: 'fit-x',
+      contains: 'padding',
+      resize: true,
+    },
+    encoding: {
+      x: {
+        field: 'time',
+        type: 'temporal',
+        title: null,
+        axis: {
+          labelAngle: 30,
+          labelOverlap: false,
+          format: '%m-%d %H:%M',
         },
       },
-    })
-  );
+      y: {
+        field,
+        type: "quantitative",
+        title,
+      },
+    },
+  }));
 
   var vegaSpec = {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
@@ -107,12 +111,32 @@
       contains: 'padding',
       resize: true,
     },
+    transform: [
+      /* corrected ambient temp */
+      {calculate: "datum.atmp / 10.0", as: "c_atmp"}
+    ],
+    config: {
+      background: 'transparent',
+      axis: {
+        domainColor: "#DDE3DF",
+        tickColor: "#DDE3DF",
+        labelColor: "#ABBAAE",
+        titleColor: "#F1F2EE",
+        titleFont: 'BPdotsUnicase',
+        titleFontSize: 20,
+        labelFont: 'Inter',
+        labelFontSize: 14,
+      },
+      line: {
+        point: true,
+        tooltip: true,
+      }
+    },
     vconcat: concat,
   };
 
   async function setup() {
     try {
-      console.log('setup');
       const result = await vegaEmbed('#viz', vegaSpec);
       return result.view;
     } catch (err) {
@@ -130,7 +154,6 @@
     try {
       const latest = (() => {
         const strLatest = sessionStorage.getItem("latestPoint");
-        console.log('strLatest:', strLatest);
         if (!strLatest) {
           return;
         }
@@ -173,7 +196,6 @@
         .insert(newPoints)
         .remove(makeFilter());
 
-      console.log('new changeset:', changeset);
       chart.change('points', changeset).run();
 
     } catch (err) {
@@ -182,10 +204,8 @@
   }
 
   window.addEventListener('load', function() {
-    console.log('loaded, starting up');
     sessionStorage.removeItem('latestPoint');
     setup().then(view => {
-      console.log('done setup, chart is:', view);
       const updateInterval = setInterval(() => {
         
         updateData(view)
