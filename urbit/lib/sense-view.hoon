@@ -71,9 +71,6 @@
     mark: {
       type: 'line',
       color: "#EDF02C",
-      point: {
-        color: "#EDF02C",
-      },
     },
     width: 700,
     autosize: {
@@ -96,6 +93,9 @@
         field,
         type: "quantitative",
         title,
+        scale: {
+          zero: false,
+          }
       },
     },
   }));
@@ -128,8 +128,8 @@
         labelFontSize: 14,
       },
       line: {
-        point: true,
         tooltip: true,
+        interpolate: 'monotone',
       }
     },
     vconcat: concat,
@@ -146,7 +146,7 @@
 
   const makeFilter = () => {
     now = Date.now();
-    oldest = 60 * 1000 * 20;
+    oldest = 60 * 1000 * 12 * 60;
     return dat => now - dat.time > oldest;
   };
 
@@ -164,7 +164,7 @@
 
       const endpoint = !!latest?.time
         ? `/apps/sense/entries/since/${latest.time}`
-        : `/apps/sense/entries/since/${new Date() - 60 * 1000}`;
+        : `/apps/sense/entries/since/${new Date() - 60 * 1000 * 12 * 60}`;
 
       const newPoints = await
         fetch(endpoint)
