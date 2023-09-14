@@ -184,7 +184,7 @@
       =/  latest=(list entry) 
         ^-  (list entry)
           (tab:data-on data `(unm:chrono:userlib now.bowl) 1)
-      ?~  latest  [(send 200 ~ [%none ~]) state]
+      ?~  latest  [(send 204 ~ [%none ~]) state]
       =/  fst  i.latest
       ~&  fst
       [(send 200 ~ %manx (dashboard.view +.fst)) state]

@@ -46,12 +46,18 @@
   ^-  manx
   ;html
     ;+  head
-    ;body(hx-ext "json-enc,include-vals")
+    ;body(hx-ext "json-enc,include-vals", hx-boost "true")
     ;script(src "/apps/sense/static/graph-script.js");
     ::
     ;center-l
       ;stack-l(space "var(--s0)")
-        ;h1: Sense
+        ;sidebar-l
+          ;h1: Sense
+          ;cluster-l
+            ;a/"/apps/sense": Graphs
+            ;a/"/apps/sense/dashboard": Dashboard
+          ==
+        ==
         ;div#viz;
       ==
     ==
@@ -60,7 +66,7 @@
   ==
 ::
 ++  dashboard
-  |=  data=point
+  |=  =point
   ^-  manx
   ;html
     ;+  head
@@ -69,40 +75,40 @@
     ;center-l
       ;div#now
         ;div(data-field "atmp")
-          ;span.value
-            ; "{(scow %rs (div:rs `@rs`atmp.data .10.0))}°C"
+          ;div.value
+            ;span: {(scow %ud atmp.point)}°C
           ==
-          ;span.label: Temp
+          ;div.label: Temp
         ==
         ;div(data-field "rhum")
-          ;span.value
-            ; "{<rhum.data>}%"
+          ;div.value
+            ;span: {<rhum.point>}%
           ==
-          ;span.label: Humidity
+          ;div.label: Humidity
         ==
         ;div(data-field "rco2")
-          ;span.value
-            ; "{<rco2.data>} ppm"
+          ;div.value
+            ;span: {<rco2.point>} ppm
           ==
-          ;span.label: CO2
+          ;div.label: CO2
         ==
         ;div(data-field "tvoc")
-          ;span.value
-            ; "{<tvoc.data>} ppb"
+          ;div.value
+            ;span: {<tvoc.point>} ppb
           ==
-          ;span.label: Volatiles
+          ;div.label: Volatiles
         ==
         ;div(data-field "wifi")
-          ;span.value
-            ; "{<wifi.data>} dB"
+          ;div.value
+            ;span: -{<wifi.point>} dB
           ==
-          ;span.label: Wi-Fi
+          ;div.label: Wi-Fi
         ==
         ;div(data-field "pm02")
-          ;span.value
-            ; "{<pm02.data>}"
+          ;div.value
+            ;span: {<pm02.point>}
           ==
-          ;span.label: Particles (μg/㎥)
+          ;div.label: Particles (μg/㎥)
         ==
       ==
     ==
@@ -157,6 +163,43 @@
   }
   #now {
     color: var(--np-white);
+    display: grid;
+    grid: auto-flow / repeat(3, 30%);
+    gap: var(--s1);
+  }
+  [data-field] {
+    padding: var(--s1);
+    border: 1px solid var(--np-gray);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  [data-field]::before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 5px;
+    right: 5px;
+    box-sizing: border-box;
+    transform: scale(100.1%);
+  }
+  [data-field] .value {
+    flex-basis: 80%;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: BPdotsUnicase, monospace;
+    font-size: 250%;
+  }
+  [data-field] .label {
+    flex-basis: 20%;
+    flex-grow: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   '''
 --
