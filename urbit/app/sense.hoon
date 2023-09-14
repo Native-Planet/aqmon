@@ -1,6 +1,7 @@
 /-  *sense
 /+  default-agent, dbug, sense, view=sense-view, server, schooner, verb
 /*  bpdu  %woff2  /sat/bpdotsunicase-bold/woff2
+/*  graph-script  %js  /sat/graph-script/js
 !:
 |%
 +$  versioned-state
@@ -176,8 +177,10 @@
       ?+    site.rest  dump
       ::
           [%apps %sense ~]
-        :_  state
-        (send 200 ~ %manx (~(document view state)))
+        [(send 200 ~ %manx (document.view)) state]
+      ::
+      ::  [%apps %sense %dashboard ~]
+      ::[(send 200 ~ %manx (dashboard.view)) state]
       ::
           [%apps %sense %entries %all ~]
         ::  get the last 200 data points
@@ -203,8 +206,9 @@
       ::
       :: static files
           [%apps %sense %static %bpdu-bold ~]
-        :_  state
-        (send 200 ~ %font-woff2 q.bpdu)
+        [(send 200 ~ %font-woff2 q.bpdu) state]
+          [%apps %sense %static %graph-script ~]
+        [(send 200 ~ %application-javascript graph-script) state]
       ==
     ==
   ::
