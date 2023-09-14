@@ -176,12 +176,20 @@
         %'GET'
       ?+    site.rest  dump
       ::
+      ::  views
           [%apps %sense ~]
-        [(send 200 ~ %manx (document.view)) state]
+        [(send 200 ~ %manx graphs.view) state]
       ::
-      ::  [%apps %sense %dashboard ~]
-      ::[(send 200 ~ %manx (dashboard.view)) state]
+        [%apps %sense %dashboard ~]
+      =/  latest=(list entry) 
+        ^-  (list entry)
+          (tab:data-on data `(unm:chrono:userlib now.bowl) 1)
+      ?~  latest  [(send 200 ~ [%none ~]) state]
+      =/  fst  i.latest
+      ~&  fst
+      [(send 200 ~ %manx (dashboard.view +.fst)) state]
       ::
+      ::  scry path dupes
           [%apps %sense %entries %all ~]
         ::  get the last 200 data points
         =/  out  .^(json %gx /(scot %p our.bowl)/sense/(scot %da now.bowl)/entries/all/json)
@@ -204,7 +212,7 @@
         :_  state
         (send 200 ~ %json out)
       ::
-      :: static files
+      ::  static files
           [%apps %sense %static %bpdu-bold ~]
         [(send 200 ~ %font-woff2 q.bpdu) state]
           [%apps %sense %static %graph-script ~]

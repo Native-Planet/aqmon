@@ -39,21 +39,71 @@
     ;script(src "https://unpkg.com/vega@5");
     ;script(src "https://unpkg.com/vega-lite@5");
     ;script(src "https://unpkg.com/vega-embed@6");
-    ;script(src "/apps/sense/static/graph-script.js");
     ;style: {style}
   ==
 ::
-++  document
-  |.
+++  graphs
   ^-  manx
   ;html
     ;+  head
     ;body(hx-ext "json-enc,include-vals")
+    ;script(src "/apps/sense/static/graph-script.js");
     ::
     ;center-l
       ;stack-l(space "var(--s0)")
         ;h1: Sense
         ;div#viz;
+      ==
+    ==
+    ::
+    ==
+  ==
+::
+++  dashboard
+  |=  data=point
+  ^-  manx
+  ;html
+    ;+  head
+    ;body
+    ::
+    ;center-l
+      ;div#now
+        ;div(data-field "atmp")
+          ;span.value
+            ; "{(scow %rs (div:rs `@rs`atmp.data .10.0))}°C"
+          ==
+          ;span.label: Temp
+        ==
+        ;div(data-field "rhum")
+          ;span.value
+            ; "{<rhum.data>}%"
+          ==
+          ;span.label: Humidity
+        ==
+        ;div(data-field "rco2")
+          ;span.value
+            ; "{<rco2.data>} ppm"
+          ==
+          ;span.label: CO2
+        ==
+        ;div(data-field "tvoc")
+          ;span.value
+            ; "{<tvoc.data>} ppb"
+          ==
+          ;span.label: Volatiles
+        ==
+        ;div(data-field "wifi")
+          ;span.value
+            ; "{<wifi.data>} dB"
+          ==
+          ;span.label: Wi-Fi
+        ==
+        ;div(data-field "pm02")
+          ;span.value
+            ; "{<pm02.data>}"
+          ==
+          ;span.label: Particles (μg/㎥)
+        ==
       ==
     ==
     ::
@@ -104,6 +154,9 @@
   #viz {
     width: 80vw;
     height: 90vh;
+  }
+  #now {
+    color: var(--np-white);
   }
   '''
 --

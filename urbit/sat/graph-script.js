@@ -1,9 +1,9 @@
 const concat = [
-  ['c_atmp',  'Temp (C)'],
+  ['c_atmp',  'Temp (°C)'],
   ['rhum',    'Humidity (%)'],
   ['rco2',    'Room CO2 (ppm)'],
-  ['pm02',    'Particles (ug/m3)'],
-  ['tvoc',    'Volatiles (ppm)'],
+  ['pm02',    'Particles (ug/㎥)'],
+  ['tvoc',    'Volatiles (ppb)'],
   ['wifi',    'Wi-Fi (dB)'],
 ].map(([field, title]) => ({
   mark: {
