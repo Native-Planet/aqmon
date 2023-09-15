@@ -71,30 +71,38 @@
   ;html
     ;+  head
     ;body
+      =hx-boost    "true"
+      =hx-trigger  "every 1250ms"
+      =hx-get      "/apps/sense/dashboard"
     ::
     ;center-l
+      ;h1: Dashboard
       ;div#now
         ;div(data-field "rco2")
           ;div.value
-            ;span: {<rco2.point>} ppm
+            ;span: {<rco2.point>}
+            ;span.unit: ppm
           ==
           ;div.label: CO2
         ==
         ;div(data-field "tvoc")
           ;div.value
-            ;span: {<tvoc.point>} ppb
+            ;span: {<tvoc.point>}
+            ;span.unit: ppb
           ==
           ;div.label: Volatiles
         ==
         ;div(data-field "rhum")
           ;div.value
-            ;span: {<rhum.point>}%
+            ;span: {<rhum.point>}
+            ;span.unit: %
           ==
           ;div.label: Humidity
         ==
         ;div(data-field "wifi")
           ;div.value
-            ;span: -{<wifi.point>} dB
+            ;span: -{<wifi.point>}
+            ;span.unit: dB
           ==
           ;div.label: Wi-Fi
         ==
@@ -106,7 +114,8 @@
         ==
         ;div(data-field "atmp")
           ;div.value
-            ;span: {(scow %ud (div atmp.point 10))}°C
+            ;span: {(scow %ud (div atmp.point 10))}
+            ;span.unit: °C
           ==
           ;div.label: Temp
         ==
@@ -164,11 +173,13 @@
   #now {
     color: var(--np-white);
     display: grid;
-    grid-template:
-      "rco2 rco2 rco2 ." 2fr
-      "rco2 rco2 rco2 ." 1fr
-      ". atmp atmp atmp" 1fr
-      ". atmp atmp atmp" 2fr;
+    grid-template-areas:
+      "rco2 rco2 rco2 ."
+      "rco2 rco2 rco2 ."
+      ". atmp atmp atmp"
+      ". atmp atmp atmp";
+    grid-template-rows: 2fr 1fr 1fr 2fr;
+    grid-template-columns: 30% 1fr 1fr 30%;
     grid-auto-flow: row dense;
     gap: var(--s1);
     justify-content: stretch;
@@ -207,16 +218,6 @@
   [data-field=atmp] {
     grid-area: atmp;
   }
-  [data-field]::before {
-    content: '';
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 5px;
-    right: 5px;
-    box-sizing: border-box;
-    transform: scale(100.1%);
-  }
   [data-field] .value {
     flex-basis: 80%;
     flex-grow: 1;
@@ -233,6 +234,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  [data-field] .unit {
+    font-size: 1.2rem;
   }
   '''
 --
