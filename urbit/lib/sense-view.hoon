@@ -35,7 +35,6 @@
     ;script(src "https://unpkg.com/htmx.org@1.9.0");
     ;script(src "https://unpkg.com/htmx.org@1.9.0/dist/ext/json-enc.js");
     ;script(src "https://unpkg.com/htmx.org@1.9.0/dist/ext/include-vals.js");
-    ;script:"htmx.logAll();"
     ;script(src "https://unpkg.com/vega@5");
     ;script(src "https://unpkg.com/vega-lite@5");
     ;script(src "https://unpkg.com/vega-embed@6");
@@ -53,10 +52,6 @@
       ;stack-l(space "var(--s0)")
         ;sidebar-l
           ;h1: Sense
-          ;cluster-l
-            ;a/"/apps/sense": Graphs
-            ;a/"/apps/sense/dashboard": Dashboard
-          ==
         ==
         ;div#viz;
       ==
@@ -76,7 +71,9 @@
       =hx-get      "/apps/sense/dashboard"
     ::
     ;center-l
-      ;h1: Dashboard
+      ;sidebar-l
+        ;h1: Dashboard
+      ==
       ;div#now
         ;div(data-field "rco2")
           ;div.value
