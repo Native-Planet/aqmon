@@ -74,18 +74,6 @@
     ::
     ;center-l
       ;div#now
-        ;div(data-field "atmp")
-          ;div.value
-            ;span: {(scow %ud atmp.point)}°C
-          ==
-          ;div.label: Temp
-        ==
-        ;div(data-field "rhum")
-          ;div.value
-            ;span: {<rhum.point>}%
-          ==
-          ;div.label: Humidity
-        ==
         ;div(data-field "rco2")
           ;div.value
             ;span: {<rco2.point>} ppm
@@ -98,6 +86,12 @@
           ==
           ;div.label: Volatiles
         ==
+        ;div(data-field "rhum")
+          ;div.value
+            ;span: {<rhum.point>}%
+          ==
+          ;div.label: Humidity
+        ==
         ;div(data-field "wifi")
           ;div.value
             ;span: -{<wifi.point>} dB
@@ -109,6 +103,12 @@
             ;span: {<pm02.point>}
           ==
           ;div.label: Particles (μg/㎥)
+        ==
+        ;div(data-field "atmp")
+          ;div.value
+            ;span: {(scow %ud (div atmp.point 10))}°C
+          ==
+          ;div.label: Temp
         ==
       ==
     ==
@@ -164,15 +164,48 @@
   #now {
     color: var(--np-white);
     display: grid;
-    grid: auto-flow / repeat(3, 30%);
+    grid-template:
+      "rco2 rco2 rco2 ." 2fr
+      "rco2 rco2 rco2 ." 1fr
+      ". atmp atmp atmp" 1fr
+      ". atmp atmp atmp" 2fr;
+    grid-auto-flow: row dense;
     gap: var(--s1);
+    justify-content: stretch;
   }
   [data-field] {
     padding: var(--s1);
-    border: 1px solid var(--np-gray);
+    background: var(--np-dark-hl);
+    color: var(--np-white);
+    border-radius: var(--s0);
     display: flex;
     flex-direction: column;
+    justify-content: space-evenly;
     position: relative;
+  }
+  [data-field=rco2], [data-field=atmp] {
+    background-color: var(--gray-100);
+    color: var(--np-black);
+    grid-row: span 2;
+    grid-column: span 2;
+    font-size: 170%;
+  }
+  [data-field=rco2] {
+    grid-area: rco2;
+    background: repeating-linear-gradient(
+        -45deg,
+        var(--gray-100),
+        var(--gray-100) 16px,
+        var(--np-dark-hl) 17px 33px,
+        var(--gray-100) 34px 50px,
+        var(--np-dark-hl) 51px 67px,
+        var(--gray-100) 68px 84px,
+        var(--gray-100) calc(84px + 100%)
+      )
+      0 0/100% 100%;
+  }
+  [data-field=atmp] {
+    grid-area: atmp;
   }
   [data-field]::before {
     content: '';
