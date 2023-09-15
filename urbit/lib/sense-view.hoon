@@ -83,14 +83,7 @@
             ;span: {<rco2.point>}
             ;span.unit: ppm
           ==
-          ;div.label: CO2
-        ==
-        ;div(data-field "tvoc")
-          ;div.value
-            ;span: {<tvoc.point>}
-            ;span.unit: ppb
-          ==
-          ;div.label: Volatiles
+          ;div.label: CO₂
         ==
         ;div(data-field "rhum")
           ;div.value
@@ -99,18 +92,25 @@
           ==
           ;div.label: Humidity
         ==
-        ;div(data-field "wifi")
+        ;div(data-field "tvoc")
           ;div.value
-            ;span: -{<wifi.point>}
-            ;span.unit: dB
+            ;span: {<tvoc.point>}
+            ;span.unit: ppb
           ==
-          ;div.label: Wi-Fi
+          ;div.label: Volatiles
         ==
         ;div(data-field "pm02")
           ;div.value
             ;span: {<pm02.point>}
           ==
           ;div.label: Particles (μg/㎥)
+        ==
+        ;div(data-field "wifi")
+          ;div.value
+            ;span: -{<wifi.point>}
+            ;span.unit: dB
+          ==
+          ;div.label: Wi-Fi
         ==
         ;div(data-field "atmp")
           ;div.value
@@ -192,14 +192,13 @@
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    position: relative;
+    gap: var(--s-2);
   }
   [data-field=rco2], [data-field=atmp] {
     background-color: var(--gray-100);
     color: var(--np-black);
     grid-row: span 2;
     grid-column: span 2;
-    font-size: 170%;
   }
   [data-field=rco2] {
     grid-area: rco2;
@@ -226,7 +225,13 @@
     align-items: center;
     text-align: center;
     font-family: BPdotsUnicase, monospace;
-    font-size: 250%;
+    font-size: 2.3rem;
+  }
+  [data-field=rhum] .value, [data-field=wifi] .value {
+    font-size: 2.9rem;
+  }
+  [data-field=rco2] .value, [data-field=atmp] .value {
+    font-size: 4.5rem;
   }
   [data-field] .label {
     flex-basis: 20%;
@@ -236,7 +241,7 @@
     align-items: center;
   }
   [data-field] .unit {
-    font-size: 1.2rem;
+    font-size: 50%;
   }
   '''
 --
