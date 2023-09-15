@@ -59,8 +59,7 @@ def newt_jam(noun_data):
 
 device_ip = 'http://192.168.0.69'
 sock_name = '/sense/data'
-pier_path = '/home/amadeo/learn_hoon/nec/'
-vere_path = '/home/amadeo/learn_hoon/urbit-test'
+pier_path = '/home/amadeo/learn_hoon/sense/nec/'
 
 sock_path = pier_path+'.urb/dev/'+sock_name
 
@@ -76,7 +75,6 @@ while True:
         newt_data = newt_jam(noun_data)
 
         sock.send(newt_data)
-    except:
-        print('error')
-        sys.exit()
+    except Exception as e: 
+        print(e)
         pass
