@@ -71,8 +71,8 @@ def fake_data():
 
 device_ip = 'http://192.168.0.69'
 sock_name = '/sense/data'
-pier_path = '/home/amadeo/learn_hoon/nec/'
-vere_path = '/home/amadeo/learn_hoon/urbit-test'
+pier_path = '/Users/acs/work-ships/zuse-412/zod/'
+# vere_path = '/home/acs/work-ships/zuse-412/zod/'
 
 sock_path = pier_path+'.urb/dev/'+sock_name
 
@@ -89,7 +89,7 @@ while True:
         newt_data = newt_jam(noun_data)
 
         sock.send(newt_data)
-        time.sleep(0.5)
+        time.sleep(2.0)
     except:
         print('error')
         sys.exit()

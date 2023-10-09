@@ -1,0 +1,8 @@
+:~  title+'sense'
+    info+'Monitor air quality with this one weird trick'
+    color+0x2e.4347
+    site+/apps/sense
+    version+[0 0 1]
+    website+'https://github.com'
+    license+'REKT'
+==
